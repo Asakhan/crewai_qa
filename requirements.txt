@@ -17,3 +17,5 @@ pydantic-settings~=2.10.1
 
 crewai==1.14.4
 python-dotenv>=1.2.2,<2
+
+google-genai>=1.0.0

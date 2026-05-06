@@ -30,6 +30,11 @@ from pydantic import BaseModel, Field
 
 load_dotenv()
 
+# crewai telemetry 및 execution trace 프롬프트 비활성화
+os.environ["CREWAI_DISABLE_TELEMETRY"] = "true"
+os.environ["OTEL_SDK_DISABLED"] = "true"
+os.environ["CREWAI_DISABLE_EVENTS"] = "true"
+
 # ── 경로 설정 ──────────────────────────────────────
 BASE_DIR    = Path(__file__).parent
 RESULTS_DIR = BASE_DIR / "results"
@@ -258,7 +263,8 @@ def run_single(
             tools=tools,
             verbose=False,
             allow_delegation=False,
-            max_iter=MAX_TOKENS,          # 최대 반복 제한
+            max_iter=3,               # 최대 반복 횟수 3회로 고정
+            max_execution_time=60,    # 60초 초과 시 강제 종료
         )
 
         # ── 태스크 구성 ────────────────────────────
@@ -371,6 +377,7 @@ def main():
         temperature=TEMPERATURE,
         max_tokens=MAX_TOKENS,
         api_key=api_key,
+        is_litellm=True,        # native provider 대신 litellm 사용
     )
 
     # ── 데이터 로드 ──────────────────────────────
